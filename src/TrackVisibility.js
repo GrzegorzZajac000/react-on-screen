@@ -100,6 +100,10 @@ export default class TrackVisibility extends Component {
    * change (using componentWillReceiveProps) without vDOM diff'ing by React.
    */
   shouldComponentUpdate(nextProps, nextState) {
+    if (this.unmounted) {
+      return false;
+    }
+
     return !shallowequal(this.state, nextState)
       || !shallowequal(this.getOwnProps(this.props), this.getOwnProps(nextProps));
   }
@@ -170,7 +174,7 @@ export default class TrackVisibility extends Component {
         && left >= leftThreshold
         && bottom <= heightCheck
         && right <= widthCheck;
-  }
+  };
   
   isComponentVisible = () => {
     const html = document.documentElement;
@@ -188,7 +192,7 @@ export default class TrackVisibility extends Component {
     }
     
     this.safeSetState({ isVisible });
-  }
+  };
   
   setNodeRef = ref => this.nodeRef = ref;
   
