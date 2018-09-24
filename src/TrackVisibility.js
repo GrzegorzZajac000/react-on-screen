@@ -79,6 +79,7 @@ export default class TrackVisibility extends Component {
       this.isComponentVisible,
       this.props.throttleInterval
     );
+	  this.unmounted = false;
 
     props.nodeRef && this.setNodeRef(props.nodeRef);
   }
@@ -89,6 +90,7 @@ export default class TrackVisibility extends Component {
   }
 
   componentWillUnmount() {
+	  this.unmounted = true;
     this.removeListener();
   }
 
@@ -139,6 +141,14 @@ export default class TrackVisibility extends Component {
     return childProps;
   }
 
+	safeSetState = (...args) => {
+		if (this.unmounted) {
+			return;
+		}
+
+		this.setState(...args);
+	};
+
   isVisible = ({ top, left, bottom, right, width, height }, windowWidth, windowHeight) => {
     const { offset, partialVisibility } = this.props;
 
@@ -177,7 +187,7 @@ export default class TrackVisibility extends Component {
       this.removeListener();
     }
     
-    this.setState({ isVisible });
+    this.safeSetState({ isVisible });
   }
   
   setNodeRef = ref => this.nodeRef = ref;
